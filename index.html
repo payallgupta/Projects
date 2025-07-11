@@ -1,34 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stopwatch Timer Application</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Stopwatch Timer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
-<body>
-
-    <div class="container">
-        <h1 class="title">Stopwatch Timer</h1>
-        <div class="stopwatch">
-            <div class="timer">
-                <span id="minutes">00</span>:
-                <span id="seconds">00</span>:
-                <span id="milliseconds">00</span>
-            </div>
-            <div class="contorls">
-                <button id="startBtn">Start</button>
-                <button id="stopBtn">Stop</button>
-                <button id="pauseBtn">Pause</button>
-                <button id="resetBtn">Reset</button>
-            </div>
-            <div class="laps">
-                <h2 class="lap-title">Lap Timer</h2>
-                <ul id="laplist"></ul>
-            </div>
-        </div>
+<body data-theme="light">
+  <div class="container">
+    <h1 class="title">⏱️Stopwatch</h1>
+    <div class="stopwatch">
+      <div class="timer">
+        <span id="minutes">00</span> :
+        <span id="seconds">00</span> :
+        <span id="milliseconds">00</span>
+      </div>
+      <div class="contorls">
+        <button id="startBtn">▶️ Start</button>
+        <button id="pauseBtn">⏸️ Pause</button>
+        <button id="resetBtn">🔄 Reset</button>
+        <button id="lapBtn">📍 Lap</button>
+        <button id="darkModeToggle">🌙 Dark Mode</button>
+      </div>
+      <div class="lap-title">📝 Lap Times</div>
+      <div class="laps"><ul id="lapsList"></ul></div>
     </div>
-    
-    <script src="script.js"></script>
+  </div>
+  <script src="script.js"></script>
 </body>
 </html>
