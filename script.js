@@ -1,125 +1,64 @@
-:root {
-  --bg-start: #ff9a9e;
-  --bg-end: #fad0c4;
-  --timer-color: #ff4e87;
-  --btn-gradient: linear-gradient(45deg, #ff4e87, #ff6a6a);
-  --btn-hover-gradient: linear-gradient(45deg, #e84376, #ff4e50);
-  --card-bg: #ffffff;
-  --text-color: #333;
+let [minutes, seconds, milliseconds] = [0, 0, 0];
+let timerInterval = null;
+const timerDisplay = document.querySelector(".timer");
+const [startBtn, pauseBtn, resetBtn, lapBtn, darkToggle] = 
+  ["startBtn","pauseBtn","resetBtn","lapBtn","darkModeToggle"].map(id => document.getElementById(id));
+const lapsList = document.getElementById("lapsList");
+
+const soundStart = new Audio('data:audio/ogg;base64,T2dn...'); // small beep
+const soundPause = new Audio('data:audio/ogg;base64,T2dn...');
+const soundLap   = new Audio('data:audio/ogg;base64,T2dn...');
+
+startBtn.addEventListener("click", () => {
+  if (timerInterval) return;
+  soundStart.play();
+  timerInterval = setInterval(updateTimer, 10);
+});
+
+pauseBtn.addEventListener("click", () => {
+  if (!timerInterval) return;
+  clearInterval(timerInterval);
+  timerInterval = null;
+  soundPause.play();
+});
+
+resetBtn.addEventListener("click", () => {
+  clearInterval(timerInterval);
+  timerInterval = null;
+  soundPause.play();
+  [minutes, seconds, milliseconds] = [0, 0, 0];
+  updateDisplay();
+  lapsList.innerHTML = "";
+});
+
+lapBtn.addEventListener("click", () => {
+  if (!timerInterval) return;
+  soundLap.play();
+  const li = document.createElement("li");
+  li.innerHTML = `<span>Lap</span> - ${format(minutes)}:${format(seconds)}:${format(milliseconds)}`;
+  lapsList.prepend(li);
+});
+
+darkToggle.addEventListener("click", () => {
+  const root = document.body;
+  const isDark = root.getAttribute("data-theme") === "dark";
+  root.setAttribute("data-theme", isDark ? "light" : "dark");
+  darkToggle.textContent = isDark ? "🌙 Dark Mode" : "☀️ Light Mode";
+});
+
+function updateTimer() {
+  milliseconds += 1;
+  if (milliseconds === 100) { milliseconds = 0; seconds++; }
+  if (seconds === 60) { seconds = 0; minutes++; }
+  updateDisplay();
 }
 
-[data-theme="dark"] {
-  --bg-start: #2c3e50;
-  --bg-end: #4ca1af;
-  --timer-color: #ff6a00;
-  --btn-gradient: linear-gradient(45deg, #ff6a00, #ff8c42);
-  --btn-hover-gradient: linear-gradient(45deg, #e65c00, #ff7f24);
-  --card-bg: #34495e;
-  --text-color: #ecf0f1;
+function updateDisplay() {
+  document.getElementById("minutes").innerText = format(minutes);
+  document.getElementById("seconds").innerText = format(seconds);
+  document.getElementById("milliseconds").innerText = format(milliseconds);
 }
 
-body {
-  background: linear-gradient(135deg, var(--bg-start), var(--bg-end));
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  font-family: 'Poppins', sans-serif;
-  margin: 0;
-  color: var(--text-color);
-  transition: background 0.5s ease, color 0.5s ease;
+function format(num) {
+  return num < 10 ? `0${num}` : num;
 }
-
-.container {
-  background: var(--card-bg);
-  border-radius: 25px;
-  padding: 40px 30px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-  width: 90%;
-  max-width: 400px;
-  transition: background 0.5s ease;
-}
-
-.title {
-  font-size: 2.5rem;
-  margin-bottom: 1.5rem;
-  color: var(--timer-color);
-  font-weight: 700;
-  text-align: center;
-  text-shadow: 1px 2px 4px rgba(0,0,0,0.1);
-}
-
-.timer {
-  font-size: 2.8rem;
-  background-color: var(--card-bg);
-  padding: 25px 35px;
-  border-radius: 15px;
-  color: var(--timer-color);
-  font-weight: bold;
-  letter-spacing: 2px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-  animation: pulse 1.5s infinite alternate;
-}
-
-@keyframes pulse {
-  from { transform: scale(1); }
-  to { transform: scale(1.03); }
-}
-
-.contorls {
-  display: flex;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin-top: 10px;
-}
-
-button, #darkModeToggle {
-  padding: 0.75rem 1.25rem;
-  font-size: 1rem;
-  background: var(--btn-gradient);
-  color: #fff;
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-  font-weight: 600;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease, background 0.3s ease;
-}
-
-button:hover, #darkModeToggle:hover {
-  background: var(--btn-hover-gradient);
-  transform: scale(1.05);
-}
-
-.lap-title {
-  font-size: 1.2rem;
-  margin-top: 1rem;
-  font-weight: 600;
-}
-
-.laps ul {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-  overflow-y: auto;
-  max-height: 180px;
-  background: var(--card-bg);
-  border-radius: 12px;
-  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
-}
-
-.laps ul::-webkit-scrollbar {
-  width: 6px;
-}
-.laps ul::-webkit-scrollbar-thumb {
-  background-color: var(--timer-color);
-  border-radius: 4px;
-}
-
-li {
-  padding: 0.8rem 1rem;
-  border-bottom: 1px solid #eee;
-  color: var(--text-color);
-}
-li span { color: var(--timer-color); }
